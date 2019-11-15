@@ -1,0 +1,25 @@
+class Solution {
+public:
+    int reverse(int x) {
+        int result = 0;
+
+        while (true) {
+            int last_bit = x % 10;
+            if (x > 0 && result > (0x7fffffff - last_bit) / 10) {
+                return 0;
+            }
+            
+            if (x < 0 && result < (0x7fffffff + 1 - last_bit) / 10) {
+                return 0;
+            }
+
+            result = result * 10 + last_bit;
+            x /= 10;
+            if (0 == x) {
+                break;
+            }
+        }
+
+        return result;
+    }
+};
