@@ -6,10 +6,9 @@ public:
     }
 
     int get(int key) {
-        record(key);
-
         auto iter = m_key_value_.find(key);
         if (iter != m_key_value_.end()) {
+            record(key);
             return iter->second;
         }
 
