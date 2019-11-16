@@ -1,0 +1,61 @@
+class LRUCache {
+public:
+    LRUCache(int capacity) {
+        capacity_ = capacity;
+        seq_id_ = 0;
+    }
+
+    int get(int key) {
+        record(key);
+
+        auto iter = m_key_value_.find(key);
+        if (iter != m_key_value_.end()) {
+            return iter->second;
+        }
+
+        return -1;
+    }
+
+    void put(int key, int value) {
+        record(key);
+        m_key_value_[key] = value;
+
+        if (m_key_value_.size() > capacity_) {
+            delete_oldest();
+        }
+    }
+
+private:
+    void record(int key) {
+        auto iter = m_key_seq_.find(key);
+        if (iter != m_key_seq_.end()) {
+            uint64_t old_seq = iter->second;
+            m_seq_key_.erase(old_seq);
+        }
+
+        m_key_seq_[key] = seq_id_;
+        m_seq_key_[seq_id_] = key;
+        seq_id_++;
+    }
+
+    void delete_oldest() {
+        int del_key = m_seq_key_.begin()->second;
+        m_key_value_.erase(del_key);
+        m_key_seq_.erase(del_key);
+        m_seq_key_.erase(m_seq_key_.begin());
+    }
+
+private:
+    int capacity_;
+    uint64_t seq_id_;                           //操作序号
+    unordered_map<int, int> m_key_value_;       //key-value
+    unordered_map<int, uint64_t> m_key_seq_;    //key-最后一次操作序号
+    map<uint64_t, int> m_seq_key_;              //操作序号-key，排序
+};
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache* obj = new LRUCache(capacity);
+ * int param_1 = obj->get(key);
+ * obj->put(key,value);
+ */
