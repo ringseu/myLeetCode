@@ -2,7 +2,6 @@ class LRUCache {
 public:
     LRUCache(int capacity) {
         capacity_ = capacity;
-        seq_id_ = 0;
     }
 
     int get(int key) {
@@ -26,30 +25,29 @@ public:
 
 private:
     void record(int key) {
-        auto iter = m_key_seq_.find(key);
-        if (iter != m_key_seq_.end()) {
-            uint64_t old_seq = iter->second;
-            m_seq_key_.erase(old_seq);
+        auto iter = l_key_.begin();
+        while (iter != l_key_.end()) {
+            if (*iter == key) {
+                l_key_.erase(iter);
+                break;
+            }
+            ++iter;
         }
 
-        m_key_seq_[key] = seq_id_;
-        m_seq_key_[seq_id_] = key;
-        seq_id_++;
+        l_key_.push_front(key);
+        return;
     }
 
     void delete_oldest() {
-        int del_key = m_seq_key_.begin()->second;
-        m_key_value_.erase(del_key);
-        m_key_seq_.erase(del_key);
-        m_seq_key_.erase(m_seq_key_.begin());
+        auto iter = l_key_.rbegin();
+        m_key_value_.erase(*iter);
+        l_key_.pop_back();
     }
 
 private:
     int capacity_;
-    uint64_t seq_id_;                           //操作序号
     unordered_map<int, int> m_key_value_;       //key-value
-    unordered_map<int, uint64_t> m_key_seq_;    //key-最后一次操作序号
-    map<uint64_t, int> m_seq_key_;              //操作序号-key，排序
+    list<int> l_key_;    //key的顺序
 };
 
 /**
