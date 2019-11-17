@@ -1,0 +1,40 @@
+class Solution {
+public:
+    bool isValid(string s) {
+        stack<char> st;
+
+        for (int i = 0; i != s.size(); ++i) {
+            char c = s[i];
+
+            if (c == '(' || c == '[' || c == '{') {
+                st.push(c);
+            }
+
+            if (c == ')' || c == ']' || c == '}') {
+                if (st.size() < 1) {
+                    return false;
+                }
+
+                char c_left = st.top();
+                if (!match(c_left, c)) {
+                    return false;
+                } else {
+                    st.pop();
+                }
+            }
+        }
+
+        return st.size() == 0;
+    }
+
+private:
+    bool match(char left, char right) {
+        if ((left == '(' && right == ')')
+            || (left == '[' && right == ']')
+            || left == '{' && right == '}') {
+                return true;
+            }
+
+        return false;
+    }
+};
