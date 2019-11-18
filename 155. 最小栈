@@ -7,17 +7,7 @@ public:
     
     void push(int x) {
         v_.push_back(x);
-
-        auto iter = l_min_.begin();
-        while (iter != l_min_.end()) {
-            if (x <= *iter) {
-                l_min_.insert(iter, x);
-                return;
-            }
-            iter++;
-        }
-
-        l_min_.push_back(x);
+        m_[x] += 1;
     }
 
     void pop() {
@@ -26,16 +16,13 @@ public:
             v_.pop_back();
         }
 
-        auto iter = l_min_.begin();
-        while (iter != l_min_.end()) {
-            if (*iter == x) {
-                l_min_.erase(iter);
-                break;
-            }
-            iter++;
+        m_[x] -= 1;
+
+        if (m_[x] <= 0) {
+            m_.erase(x);
         }
     }
-    
+
     int top() {
         if (v_.size() == 0) {
             return -1;
@@ -45,15 +32,15 @@ public:
     }
     
     int getMin() {
-        if (l_min_.size() == 0) {
+        if (m_.size() == 0) {
             return -1;
         }
-        return *(l_min_.begin());
+        return m_.begin()->first;
     }
 
 private:
     vector<int> v_;
-    list<int> l_min_;
+    map<int, int> m_;
 };
 
 /**
