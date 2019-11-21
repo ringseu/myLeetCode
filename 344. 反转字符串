@@ -1,0 +1,15 @@
+class Solution {
+public:
+    void reverseString(vector<char>& s) {
+        int pb = 0, pe = s.size() - 1;
+        char tmp = 0;
+
+        while (pe > pb) {
+            tmp = s[pb];
+            s[pb] = s[pe];
+            s[pe] = tmp;
+            pe--;
+            pb++;
+        }
+    }
+};
