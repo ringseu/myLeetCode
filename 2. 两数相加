@@ -1,0 +1,59 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        ListNode *head = l1, *p1 = NULL, *p2 = NULL;
+        int incr = 0;
+
+        while (l1 != NULL && l2 != NULL) {
+            l1->val = GetSum(l1->val, l2->val, incr);
+
+            p1 = l1;
+            l1 = l1->next;
+
+            p2 = l2;
+            l2 = l2->next;
+        }
+
+        //先把l2剩下的接到l1后面
+        if (l2 != NULL) {
+            p1->next = p2->next;
+            l1 = l2;
+        }
+
+        while (l1 != NULL && incr != 0) {
+            l1->val = GetSum(l1->val, 0, incr);
+            p1 = l1;
+            l1 = l1->next;
+        }
+
+        if (l1 == NULL && incr == 1) {
+            ListNode *tail = new struct ListNode(1);
+            tail->next = NULL;
+            tail->val = 1;
+            p1->next = tail;
+        }
+
+        return head;
+    }
+
+private:
+    int GetSum(int left, int right, int& incr) {
+        int sum = left + right + incr;
+        if (sum > 9) {
+            sum -= 10;
+            incr = 1;
+        } else {
+            incr = 0;
+        }
+
+        return sum;
+    }
+};
