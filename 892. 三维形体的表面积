@@ -1,0 +1,25 @@
+class Solution {
+public:
+    int surfaceArea(vector<vector<int>>& grid) {
+        int result = 0;
+
+        for (int i = 0; i != grid.size(); ++i) {
+            vector<int> grid_i = grid[i];
+            for (int j = 0; j != grid_i.size(); ++j) {
+                int v = grid_i[j];
+                int left = (j == 0) ? 0 : grid_i[j-1];
+                int right = (j == grid_i.size() - 1) ? 0 : grid_i[j+1];
+                int up = (i == 0) ? 0 : grid[i-1][j];
+                int down = (i == grid.size() - 1) ? 0 : grid[i+1][j];
+
+                result += (v > 0) ? 2 : 0;
+                result += (v > left) ? v - left : 0;
+                result += (v > right) ? v - right : 0;
+                result += (v > up) ? v - up : 0;
+                result += (v > down) ? v - down : 0;
+            }
+        }
+
+        return result;
+    }
+};
