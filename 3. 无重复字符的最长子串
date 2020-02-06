@@ -5,29 +5,21 @@ public:
             return s.size();
         }
 
-        int begin = 0, result = 0;
+        int begin = 0, end = 0, result = 0;
+        unordered_set<int> tmp;
 
-        while (begin < s.size() - 1) {
-            unordered_map<char, int> tmp; //字符,下标
-            int current = 0;
+        while (begin < s.size() && end < s.size()) {
+            char c = s[end];
 
-            for (int i = begin; i < s.size(); ++i) {
-                char c = s[i];
-
-                if (tmp.end() == tmp.find(c)) { //c是不重复的字符
-                    tmp[c] = i;
-                    current++;
-                    if (current > result) {
-                        result = current;
-                    }
-                } else { //c是已存在的字符，找下一个位置
-                    begin = tmp[c] + 1;
-                    break;
+            if (tmp.end() != tmp.find(c)) { //存在重复字符
+                tmp.erase(s[begin]);
+                begin++;
+            } else {
+                if (end - begin + 1 > result) {
+                    result = end - begin + 1;
                 }
-
-                if (i == s.size() - 1) {
-                    return result;
-                } 
+                tmp.insert(c);
+                end++;
             }
         }
 
