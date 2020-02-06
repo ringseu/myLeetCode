@@ -1,0 +1,36 @@
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        if (s.size() == 0 || s.size() == 1) {
+            return s.size();
+        }
+
+        int begin = 0, result = 0;
+
+        while (begin < s.size() - 1) {
+            unordered_map<char, int> tmp; //字符,下标
+            int current = 0;
+
+            for (int i = begin; i < s.size(); ++i) {
+                char c = s[i];
+
+                if (tmp.end() == tmp.find(c)) { //c是不重复的字符
+                    tmp[c] = i;
+                    current++;
+                    if (current > result) {
+                        result = current;
+                    }
+                } else { //c是已存在的字符，找下一个位置
+                    begin = tmp[c] + 1;
+                    break;
+                }
+
+                if (i == s.size() - 1) {
+                    return result;
+                } 
+            }
+        }
+
+        return result;
+    }
+};
