@@ -1,0 +1,68 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        int count = 0;
+        ListNode *p = head, *prev = head, *result = NULL, *tail = NULL;
+
+        while (p != NULL) {
+            p = p->next;
+            count++;
+
+            if (count == k) { //每走k步翻转一次
+                pair<ListNode*, ListNode*> tmp = reverseList(prev, k);
+
+                if (result == NULL) { //第一段，初始化
+                    result = tmp.first;
+                    tail = tmp.second;
+                } else { //否则拼接到结果里
+                    tail->next = tmp.first;
+                    tail = tmp.second;
+                }
+
+                //推进
+                prev = p;
+                count = 0;
+                continue;
+            }
+        }
+
+        //处理最后剩下的一段
+        if (count > 0 && count < k) {
+            if (result == NULL) {
+                return head;
+            } else {
+                tail->next = prev;
+            }
+        }
+
+        return result;
+    }
+
+private:
+    pair<ListNode*, ListNode*> reverseList(ListNode* head, int k) { //反转链表，返回(head, tail)
+        if (head == NULL) {
+            ListNode *h = NULL, *t = NULL;
+            return make_pair(h, t);
+        }
+
+        if (k == 1) {
+            return make_pair(head, head);
+        }
+
+        pair<ListNode*, ListNode*> tmp = reverseList(head->next, k-1);
+        tmp.second->next = head;
+        tmp.second = tmp.second->next;
+        tmp.second->next = NULL;
+
+        return tmp;
+    }
+
+};
