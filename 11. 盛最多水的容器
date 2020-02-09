@@ -5,16 +5,20 @@ public:
             return 0;
         }
 
-        int result = 0;
+        int left = 0, right = height.size() - 1, result = 0;
 
-        for (int left = 0; left < height.size() - 1; ++left) {
-            for (int right = left + 1; right < height.size(); ++right) {
-                int tmp = min(height[left], height[right]) * (right - left);
-                if (tmp > result) {
-                    result = tmp;
-                }
+        do {
+            int tmp = min(height[left], height[right]) * (right - left);
+            if (tmp > result) {
+                result = tmp;
             }
-        }
+
+            if (height[left] < height[right]) {
+                left++;
+            } else {
+                right--;
+            }
+        } while (left < right);
 
         return result;
     }
