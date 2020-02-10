@@ -6,27 +6,21 @@ public:
         }
 
         int result = 0;
-
-        vector<int> candies_l(ratings.size(), 1), candies_r(ratings.size(), 1);
+        vector<int> candies(ratings.size(), 1);
 
         for (int i = 1; i < ratings.size(); ++i) {
             if (ratings[i] > ratings[i-1]) { //比左边大，糖果数+1
-                candies_l[i] = candies_l[i-1] + 1;
-            } else { //否则糖果数重置为1
-                candies_l[i] = 1;
+                candies[i] = max(candies[i], candies[i-1] + 1);
             }
-        }
 
-        for (int i = ratings.size() - 2; i >= 0; i--) {
-            if (ratings[i] > ratings[i+1]) {
-                candies_r[i] = candies_r[i+1] + 1;
-            } else {
-                candies_r[i] = 1;
+            int j = ratings.size() - 1 - i;
+            if (ratings[j] > ratings[j+1]) {
+                candies[j] = max(candies[j], candies[j+1] + 1);
             }
         }
 
         for (int i = 0; i < ratings.size(); ++i) {
-            result += max(candies_l[i], candies_r[i]);
+            result += candies[i];
         }
 
         return result;
