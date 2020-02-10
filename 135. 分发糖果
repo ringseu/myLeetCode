@@ -6,33 +6,27 @@ public:
         }
 
         int result = 0;
-        int current = 1;
 
-        vector<int> candies(ratings.size(), 1);
+        vector<int> candies_l(ratings.size(), 1), candies_r(ratings.size(), 1);
 
         for (int i = 1; i < ratings.size(); ++i) {
-            if (ratings[i] == ratings[i-1]) { //和左边相等，重置current
-                current = 1;
-                candies[i] = 1;
-            } else if (ratings[i] > ratings[i-1]) { //比左边大，增加current
-                current++;
-                candies[i] = current;
-            } else if (current > 1) { //比左边小，且current大于1，重置current
-                current = 1;
-                candies[i] = 1;
-            } else { //比左边小，且current为1，需要向前回溯
-                for (int j = i; j > 0; --j) {
-                    if (ratings[j-1] > ratings[j] && candies[j-1] == candies[j]) {
-                        candies[j-1] += 1;
-                    } else {
-                        break;
-                    }
-                }
+            if (ratings[i] > ratings[i-1]) { //比左边大，糖果数+1
+                candies_l[i] = candies_l[i-1] + 1;
+            } else { //否则糖果数重置为1
+                candies_l[i] = 1;
             }
         }
 
-        for (int i = 0; i < candies.size(); ++i) {
-            result += candies[i];
+        for (int i = ratings.size() - 2; i >= 0; i--) {
+            if (ratings[i] > ratings[i+1]) {
+                candies_r[i] = candies_r[i+1] + 1;
+            } else {
+                candies_r[i] = 1;
+            }
+        }
+
+        for (int i = 0; i < ratings.size(); ++i) {
+            result += max(candies_l[i], candies_r[i]);
         }
 
         return result;
