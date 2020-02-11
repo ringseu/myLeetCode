@@ -1,0 +1,31 @@
+class Solution {
+public:
+    vector<vector<int>> permute(vector<int>& nums) {
+        vector<vector<int> > result;
+
+        if (nums.size() == 0) {
+            return result;
+        }
+
+        vector<int> track;
+        backTrack(nums, 0, track, result);
+
+        return result;
+    }
+
+private:
+    void backTrack(vector<int>& nums, int n, vector<int> &track, vector<vector<int> > &result) {
+        if (n == nums.size()) {
+            result.push_back(track);
+            return;
+        }
+
+        for (int i = n; i < nums.size(); ++i) {
+            track.push_back(nums[i]);
+            swap(nums[i], nums[n]);
+            backTrack(nums, n+1, track, result);
+            swap(nums[i], nums[n]);
+            track.pop_back();
+        }
+    }
+};
