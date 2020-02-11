@@ -1,0 +1,55 @@
+class Solution {
+public:
+    vector<string> restoreIpAddresses(string s) {
+        vector<string> result;
+        string dst;
+
+        backTrace(s, 0, dst, result);
+
+        return result;
+    }
+
+private:
+    void backTrace(string src, int n, string &dst, vector<string> &result) {
+        if (n == 3) { //最后一层
+            if (isLegal(src)) {
+                dst += src;
+                result.push_back(dst);
+            }
+
+            return;
+        }
+
+        for (int i = 1; i <= 3; ++i) {
+            if (src.size() > i) {
+                string sub = src.substr(0, i);
+                if (isLegal(sub)) { //当前段合法，进入下一层
+                    string pre = dst;
+                    dst += sub;
+                    dst += ".";
+                    backTrace(src.substr(i, src.size()-i), n+1, dst, result);
+                    //撤销之前的选择
+                    dst = pre;
+                }
+            }
+        }
+    }
+
+    //判断ip段是否合法
+    bool isLegal(string s) {
+        if (s.size() < 1 || s.size() > 3) {
+            return false;
+        }
+
+        if (s[0] == '0' && s.size() > 1) {
+            return false;
+        }
+
+        int num = strtol(s.c_str(), NULL, 10);
+        if (num >= 0 && num <= 255) {
+            return true;
+        }
+
+        return false;
+    }
+};
