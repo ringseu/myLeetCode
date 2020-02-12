@@ -1,0 +1,66 @@
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        vector<int> result;
+
+        int height = matrix.size(), width = 0;
+        if (height > 0) {
+            width = matrix[0].size();
+        }
+
+        if (height == 0 || width == 0) {
+            return result;
+        }
+
+        result.push_back(matrix[0][0]);
+        dfs(matrix, 0, 0, 0, height-1, 0, width-1, "right", result);
+
+        return result;
+    }
+
+private:
+    void dfs(vector<vector<int>>& matrix, int i, int j, //i,j为游标
+            int up, int down, int left, int right, //上下左右4个边界
+            string direction, vector<int> &result) { //direction为方向，右->下->左->上
+        if (up > down || left > right) {
+            return;
+        }
+
+        result.pop_back();
+
+        if (direction == "right") {
+            while (j <= right) {
+                result.push_back(matrix[i][j]);
+                j++;
+            }
+            //删除上面一行，游标向下
+            dfs(matrix, i, j-1, up+1, down, left, right, "down", result);
+        }
+        if (direction == "down") {
+            while (i <= down) {
+                result.push_back(matrix[i][j]);
+                i++;
+            }
+            //删除右边一列，游标向左
+            dfs(matrix, i-1, j, up, down, left, right-1, "left", result);
+        }
+        if (direction == "left") {
+            while (j >= left) {
+                result.push_back(matrix[i][j]);
+                j--;
+            }
+            //删除下面一行，游标向上
+            dfs(matrix, i, j+1, up, down-1, left, right, "up", result);
+        }
+        if (direction == "up") {
+            while (i >= up) {
+                result.push_back(matrix[i][j]);
+                i--;
+            }
+            //删除左边一列，游标向右
+            dfs(matrix, i+1, j, up, down, left+1, right, "right", result);
+        }
+
+        return;
+    }
+};
