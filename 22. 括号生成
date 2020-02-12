@@ -1,0 +1,38 @@
+class Solution {
+public:
+    vector<string> generateParenthesis(int n) {
+        vector<string> result;
+        string s;
+
+        backTrace(0, 0, n, s, result);
+
+        return result;
+    }
+
+private:
+    void backTrace(int left, int right, int n, string &s, vector<string> &result) {
+        if (left == n && right == n) { //左右括号各放了n个，得到一个答案
+            result.push_back(s);
+            return;
+        }
+
+        string tmp = s;
+        if (left == n) { //如果左括号放完了，只能放右括号
+            s.append(")");
+            backTrace(left, right+1, n, s, result);
+            s = tmp;
+        } else if (left == right) { //如果左括号比右括号少，只能放左括号
+            s.append("(");
+            backTrace(left+1, right, n, s, result);
+            s = tmp;
+        } else { //否则先试试左，再试试右
+            s.append("(");
+            backTrace(left+1, right, n, s, result);
+            s = tmp;
+
+            s.append(")");
+            backTrace(left, right+1, n, s, result);
+            s = tmp;
+        }
+    }
+};
