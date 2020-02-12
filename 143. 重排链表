@@ -1,0 +1,40 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    void reorderList(ListNode* head) {
+        vector<ListNode*> v;
+        ListNode *tmp = head;
+
+        //第一次遍历，把链表拆散存进vector
+        while (head) {
+            tmp = head;
+            head = head->next;
+            tmp->next = NULL;
+            v.push_back(tmp);
+        }
+
+        //第二次遍历，用双指针重排，这里tmp指向链表尾
+        for (int i = 0, j = v.size()-1; i <= j; i++, j--) {
+            if (!head) {
+                head = v[i];
+                tmp = head->next = v[j];
+            } else {
+                tmp->next = v[i];
+                tmp = tmp->next;
+                tmp->next = v[j];
+                tmp = tmp->next;
+            }
+
+            if (i == j) { //如果i==j，尾节点被插入了两次，自己指向自己
+                tmp->next = NULL;
+            }
+        }
+    }
+};
