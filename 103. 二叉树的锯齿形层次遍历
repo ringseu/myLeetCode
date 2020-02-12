@@ -1,0 +1,56 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+        stack<TreeNode*> s_left, s_right; //每层用一个栈，两个栈交替使用
+        vector<vector<int> > result;
+
+        if (root) {
+            s_right.push(root);
+        }
+
+        while (1) { //每次只有一个栈满，另一个栈一定是空
+            vector<int> v;
+
+            if (s_left.size() > 0) { //这层从右往左压栈
+                while (s_left.size() > 0) {
+                    auto node = s_left.top();
+                    s_left.pop();
+                    v.push_back(node->val);
+                    if (node->right) {
+                        s_right.push(node->right);
+                    }
+                    if (node->left) {
+                        s_right.push(node->left);
+                    }
+                }
+            } else if (s_right.size() > 0) { //这层从左往右压栈
+                while (s_right.size() > 0) {
+                    auto node = s_right.top();
+                    s_right.pop();
+                    v.push_back(node->val);
+                    if (node->left) {
+                        s_left.push(node->left);
+                    }
+                    if (node->right) {
+                        s_left.push(node->right);
+                    }
+                }
+            } else { //两个栈都空了，结束
+                break;
+            }
+
+            result.push_back(v);
+        }
+
+        return result;
+    }
+};
