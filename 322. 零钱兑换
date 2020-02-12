@@ -1,0 +1,39 @@
+class Solution {
+public:
+    int coinChange(vector<int>& coins, int amount) {
+        if (amount == 0) {
+            return 0;
+        }
+
+        vector<int> dp(amount+1, 0);
+        set<int> s; //所有候选面额的集合，去掉了一些不合理的值
+
+        //设置动态规划的初始值
+        for (int i = 0; i < coins.size(); ++i) {
+            if (coins[i] <= amount) {
+                dp[coins[i]] = 1;
+                s.insert(coins[i]);
+            }
+        }
+
+        //动态规划，递推关系为：dp[i] = min(dp[amount-面额1], dp[amount-面额2], dp[amount-面额3], ...) + 1
+        // 如果dp[amount-面额n]全部为0，则说明组合不出该金额，dp[i] = 0
+        for (int i = 1; i <= amount; ++i) {
+            if (dp[i] != 0) {
+                continue;
+            }
+
+            int min = amount + 1;
+            for (auto iter = s.begin(); iter != s.end(); ++iter) {
+                int coin = *iter;
+                if (coin < i && dp[i-coin] > 0 && dp[i-coin] < min) {
+                    min = dp[i-coin];
+                }
+            }
+
+            dp[i] = (min == amount + 1) ? 0 : min + 1;
+        }
+
+        return dp[amount] == 0 ? -1 : dp[amount];
+    }
+};
