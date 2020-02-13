@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int firstMissingPositive(vector<int>& nums) {
+        for (int i = 0; i < nums.size(); ++i) {
+            while (nums[i] > 0 && nums[i] <= nums.size() && i != nums[i]-1) { //不停交换元素，把元素摆到 下标=值-1 的位置
+                int tmp = nums[nums[i]-1];
+                if (tmp == nums[i]) { //如果相应位置已经摆对了，忽略这个值
+                    nums[i] = -1;
+                    break;
+                }
+
+                nums[nums[i]-1] = nums[i];
+                nums[i] = tmp;
+            }
+
+            if (nums[i] <= 0 || nums[i] > nums.size()) { //无法交换，把这里挖个空洞，用-1表示
+                nums[i] = -1;
+            }
+        }
+
+        for (int i = 0; i < nums.size(); ++i) {
+            if (nums[i] < 0) {
+                return i+1;
+            }
+        }
+
+        return nums.size()+1;
+    }
+};
