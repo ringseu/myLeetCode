@@ -1,0 +1,61 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        list<TreeNode*> lp, lq;
+
+        if (!findNode(root, p, lp) || !findNode(root, q, lq)) {
+            return NULL;
+        }
+
+        auto iter_p = lp.begin(), iter_q = lq.begin(), pre_p = iter_p, pre_q = iter_q;
+
+        while (iter_p != lp.end() || iter_q != lq.end()) {
+            pre_p = iter_p;
+            pre_q = iter_q;
+            iter_p++;
+            iter_q++;
+
+            if (*iter_p != *iter_q) {
+                return *pre_p;
+            }
+        }
+
+        if (iter_p == lp.end()) {
+            return *pre_p;
+        } else if (iter_q == lq.end()) {
+            return *pre_q;
+        }
+
+        return root;
+    }
+
+private:
+    bool findNode(TreeNode* root, TreeNode* p, list<TreeNode*>& lp) {
+        TreeNode *node = root;
+
+        if (node == NULL) {
+            return false;
+        } else if (node == p) {
+            lp.push_front(node);
+            return true;
+        } else if (node->left == NULL && node->right == NULL) {
+            return false;
+        }
+
+        if ((node->left && findNode(node->left, p, lp)) || (node->right && findNode(node->right, p, lp))) {
+            lp.push_front(node);
+            return true;
+        }
+
+        return false;
+    }
+};
