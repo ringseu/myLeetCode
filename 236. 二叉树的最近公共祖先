@@ -10,52 +10,34 @@
 class Solution {
 public:
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-        list<TreeNode*> lp, lq;
-
-        if (!findNode(root, p, lp) || !findNode(root, q, lq)) {
-            return NULL;
-        }
-
-        auto iter_p = lp.begin(), iter_q = lq.begin(), pre_p = iter_p, pre_q = iter_q;
-
-        while (iter_p != lp.end() || iter_q != lq.end()) {
-            pre_p = iter_p;
-            pre_q = iter_q;
-            iter_p++;
-            iter_q++;
-
-            if (*iter_p != *iter_q) {
-                return *pre_p;
-            }
-        }
-
-        if (iter_p == lp.end()) {
-            return *pre_p;
-        } else if (iter_q == lq.end()) {
-            return *pre_q;
-        }
-
-        return root;
+        TreeNode* result = NULL;
+        dfs(root, p, q, result);
+        return result;
     }
 
 private:
-    bool findNode(TreeNode* root, TreeNode* p, list<TreeNode*>& lp) {
+    int dfs(TreeNode* root, TreeNode* p, TreeNode* q, TreeNode* &result) { //1-只找到p，2-只找到q，3-找到p和q
         TreeNode *node = root;
+        int ret = 0, ret_left = 0, ret_right = 0;
 
         if (node == NULL) {
-            return false;
+            return 0;
         } else if (node == p) {
-            lp.push_front(node);
-            return true;
+            ret = 1;
+        } else if (node == q) {
+            ret = 2;
         } else if (node->left == NULL && node->right == NULL) {
-            return false;
+            return 0;
         }
 
-        if ((node->left && findNode(node->left, p, lp)) || (node->right && findNode(node->right, p, lp))) {
-            lp.push_front(node);
-            return true;
+        ret_left = dfs(node->left, p, q, result);
+        ret_right = dfs(node->right, p, q, result);
+
+        ret = ret + ret_left + ret_right;
+        if (ret == 3 && result == NULL) {
+            result = node;
         }
 
-        return false;
+        return ret;
     }
 };
